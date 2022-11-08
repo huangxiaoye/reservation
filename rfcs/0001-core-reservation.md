@@ -119,8 +119,8 @@ We use the postgres as the database.Below is the database schema:
 
 ```sql
 CREATE SCHEMA rsvp;
-CREATE type rsvp.reservation_status AS ENUM ('unknown', 'pending', 'confirmed', 'blocked');
-CREATE type rsvp.reservation_update_type AS ENUM ('unknown', 'create', 'update', 'delete');
+CREATE TYPE rsvp.reservation_status AS ENUM ('unknown', 'pending', 'confirmed', 'blocked');
+CREATE TYPE rsvp.reservation_update_type AS ENUM ('unknown', 'create', 'update', 'delete');
 CREATE TABLE rsvp.reservations (
   id uuid NOT NULL DEFAULT uuid_generate_v4(),
   user_id varchar(64) NOT NULL,

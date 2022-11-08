@@ -49,7 +49,7 @@ message ReserveResponse {
   Reservation reservation = 1;
 }
 
-// To update a reservation, send an UpdateRequest. Only note is updateable 
+// To update a reservation, send an UpdateRequest. Only note is updateable
 message UpdateRequest {
   string note = 1;
 }
@@ -89,18 +89,22 @@ message GetResponse {
   Reservation reservation = 1;
 }
 
-// To query a reservation, send a QueryRequest
-message QueryRequest {
+// Query reservations with user id,resource id,start time,end time,and status
+message ReservationQuery {
   // request id for the reservation query. If empty, query all resources
   string resource_id = 1;
   // user id for the reservation query. If empty, query all users
   string user_id = 2;
   // use status to filter result. if UNKNOWN, return all reservations
   ReservationStatus status = 3;
-  // start time for the reservation query, if zero, use Infinty for start time
+  // start time for the reservation query, if zero, use Infinity for start time
   google.protobuf.Timestamp start = 4;
-  // end time for the reservation query, if zero, use Infinty for end time
+  // end time for the reservation query, if zero, use Infinity for end time
   google.protobuf.Timestamp end = 5;
+}
+// To query a reservation, send a QueryRequest
+message QueryRequest {
+  ReservationQuery query = 1;
 }
 
 // Client can listen reservation updates by sending a ListenRequest
@@ -108,7 +112,7 @@ message ListenRequest {
 
 }
 
-// Server will send ListenResponse to client in streaming response 
+// Server will send ListenResponse to client in streaming response
 message ListenResponse {
   // update tytpe
   ReservationUpdateType op = 1;
@@ -116,7 +120,7 @@ message ListenResponse {
   Reservation reservation = 2;
 }
 
-// Reservation service 
+// Reservation service
 service ReservationService {
   // make a reservation
   rpc reserve(ReserveRequest) returns (ReserveResponse);
