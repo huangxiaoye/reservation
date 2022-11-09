@@ -1,2 +1,3 @@
 DROP EXTENSION btree_gist;
+DROP EXTENSION pgcrypto;
 DROP SCHEMA rsvp CASCADE;
