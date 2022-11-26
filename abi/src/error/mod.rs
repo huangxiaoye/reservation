@@ -3,8 +3,7 @@ mod conflict;
 use sqlx::postgres::PgDatabaseError;
 use thiserror::Error;
 
-
-pub use conflict::{ReservationConflictInfo, ReservationConflict,ReservationWindow};
+pub use conflict::{ReservationConflict, ReservationConflictInfo, ReservationWindow};
 #[derive(Error, Debug)]
 pub enum Error {
     // #[error("data store disconnected")]
@@ -17,6 +16,15 @@ pub enum Error {
 
     #[error("Invalid start or end time for the reservation")]
     InvalidTime,
+
+    #[error("Invalid start time for the reservation")]
+    InvalidReservationStart,
+
+    #[error("Invalid end time for the reservation")]
+    InvalidReservationEnd,
+
+    #[error("Invalid timespan for the reservation")]
+    InvalidReservationTimespan,
 
     #[error("Conflict reservation")]
     ConflictReservation(ReservationConflictInfo),
@@ -62,13 +70,12 @@ impl From<sqlx::Error> for Error {
                 match (err.code(), err.schema(), err.table()) {
                     ("23P01", Some(_rsvp), Some(_reservations)) => {
                         Error::ConflictReservation(err.detail().unwrap().parse().unwrap())
-                    },
-                    _ => Error::DbError(sqlx::Error::Database(e))
+                    }
+                    _ => Error::DbError(sqlx::Error::Database(e)),
                 }
-            },
+            }
             sqlx::Error::RowNotFound => Error::NotFound,
             _ => Error::DbError(e),
         }
-
     }
 }
