@@ -15,7 +15,10 @@ fn main() {
         .out_dir("src/pb")
         //.type_attribute("reservation.ReservationStatus", "#[derive(sqlx::Type)]")
         .with_sql_type(&["reservation.ReservationStatus"])
-        .with_builder(&["reservation.ReservationQuery"])
+        .with_builder(&[
+            "reservation.ReservationQuery",
+            "reservation.ReservationFilter",
+        ])
         .with_builder_into(
             "reservation.ReservationQuery",
             &[
@@ -24,6 +27,17 @@ fn main() {
                 "status",
                 "page_size",
                 "page",
+                "desc",
+            ],
+        )
+        .with_builder_into(
+            "reservation.ReservationFilter",
+            &[
+                "resource_id",
+                "user_id",
+                "status",
+                "page_size",
+                "cursor",
                 "desc",
             ],
         )
