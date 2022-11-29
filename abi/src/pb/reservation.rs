@@ -425,7 +425,7 @@ pub mod reservation_service_client {
         pub async fn listen(
             &mut self,
             request: impl tonic::IntoRequest<super::ListenRequest>,
-        ) -> Result<tonic::Response<tonic::codec::Streaming<super::ListenResponse>>, tonic::Status>
+        ) -> Result<tonic::Response<tonic::codec::Streaming<super::Reservation>>, tonic::Status>
         {
             self.inner.ready().await.map_err(|e| {
                 tonic::Status::new(
@@ -489,7 +489,7 @@ pub mod reservation_service_server {
             request: tonic::Request<super::FilterRequest>,
         ) -> Result<tonic::Response<super::FilterResponse>, tonic::Status>;
         ///Server streaming response type for the listen method.
-        type listenStream: futures_core::Stream<Item = Result<super::ListenResponse, tonic::Status>>
+        type listenStream: futures_core::Stream<Item = Result<super::Reservation, tonic::Status>>
             + Send
             + 'static;
         /// another system could monitor newly added/confirmed/cancelled reservations
@@ -780,7 +780,7 @@ pub mod reservation_service_server {
                         tonic::server::ServerStreamingService<super::ListenRequest>
                         for listenSvc<T>
                     {
-                        type Response = super::ListenResponse;
+                        type Response = super::Reservation;
                         type ResponseStream = T::listenStream;
                         type Future =
                             BoxFuture<tonic::Response<Self::ResponseStream>, tonic::Status>;

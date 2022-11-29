@@ -177,5 +177,5 @@ service ReservationService {
   // filter reservations, order by reservation id
   rpc filter(FilterRequest) returns (FilterResponse);
   // another system could monitor newly added/confirmed/cancelled reservations
-  rpc listen(ListenRequest) returns (stream ListenResponse);
+  rpc listen(ListenRequest) returns (stream Reservation);
 }

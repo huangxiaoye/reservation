@@ -1,9 +1,10 @@
 use crate::{ReservationManager, Rsvp};
-use abi::{FilterPager, Reservation};
+use abi::{DbConfig, FilterPager, Reservation};
 use abi::{ReservationId, Validator};
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
 use sqlx::postgres::types::PgRange;
+use sqlx::postgres::PgPoolOptions;
 
 use sqlx::PgPool;
 use sqlx::Row;
@@ -134,6 +135,7 @@ impl Rsvp for ReservationManager {
         // if len - start > page_size, then we have next, we end at len - 1
         let has_prev = !rsvps.is_empty() && rsvps[0].id == filter.cursor;
         let start = usize::from(has_prev);
+        //let start = if has_prev { 1 } else { 0 };
 
         let has_next = (rsvps.len() - start) as i32 > page_size;
         let end = if has_next {
@@ -160,6 +162,15 @@ impl Rsvp for ReservationManager {
 impl ReservationManager {
     pub fn new(pool: PgPool) -> Self {
         Self { pool }
+    }
+    pub async fn from_config(config: &DbConfig) -> Result<Self, abi::Error> {
+        let url = config.url();
+        //let pool = PgPool::connect(&url).await?;
+        let pool = PgPoolOptions::default()
+            .max_connections(config.max_connections)
+            .connect(&url)
+            .await?;
+        Ok(Self::new(pool))
     }
 }
 

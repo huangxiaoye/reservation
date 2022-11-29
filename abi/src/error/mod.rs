@@ -11,21 +11,26 @@ pub enum Error {
     // #[error("the data for key `{0}` is not available")]
     // Redaction(String),
     // #[error("invalid header (expected {expected:?}, found {found:?})")]
+    #[error("Failed to read configuration file")]
+    ConfigReadError,
+
+    #[error("Failed to parse configuration file")]
+    ConfigParseError,
+
     #[error("Database error")]
     DbError(sqlx::Error),
 
     #[error("Invalid start or end time for the reservation")]
     InvalidTime,
 
-    #[error("Invalid start time for the reservation")]
-    InvalidReservationStart,
+    // #[error("Invalid start time for the reservation")]
+    // InvalidReservationStart,
 
-    #[error("Invalid end time for the reservation")]
-    InvalidReservationEnd,
+    // #[error("Invalid end time for the reservation")]
+    // InvalidReservationEnd,
 
-    #[error("Invalid timespan for the reservation")]
-    InvalidReservationTimespan,
-
+    // #[error("Invalid timespan for the reservation")]
+    // InvalidReservationTimespan,
     #[error("Conflict reservation")]
     ConflictReservation(ReservationConflictInfo),
 
@@ -76,6 +81,40 @@ impl From<sqlx::Error> for Error {
             }
             sqlx::Error::RowNotFound => Error::NotFound,
             _ => Error::DbError(e),
+        }
+    }
+}
+
+impl From<crate::Error> for tonic::Status {
+    fn from(e: crate::Error) -> Self {
+        match e {
+            crate::Error::DbError(e) => tonic::Status::internal(format!("Database error: {}", e)),
+            crate::Error::ConfigReadError => {
+                tonic::Status::internal("Failed to read configuration file")
+            }
+            crate::Error::ConfigParseError => {
+                tonic::Status::internal("Failed to parse configuration file")
+            }
+            crate::Error::InvalidTime => {
+                tonic::Status::invalid_argument("Invalid start or end time for the reservation")
+            }
+            crate::Error::ConflictReservation(info) => {
+                tonic::Status::failed_precondition(format!("Conflict reservation: {:?}", info))
+            }
+            crate::Error::NotFound => tonic::Status::not_found(
+                "No reservation found by the given condition
+                ",
+            ),
+            crate::Error::InvalidReservationId(id) => {
+                tonic::Status::invalid_argument(format!("Invalid reservation id: {}", id))
+            }
+            crate::Error::InvalidUserId(id) => {
+                tonic::Status::invalid_argument(format!("Invalid user id: {}", id))
+            }
+            crate::Error::InvalidResourceId(id) => {
+                tonic::Status::invalid_argument(format!("Invalid resource id: {}", id))
+            }
+            crate::Error::Unknown => tonic::Status::unknown("unknown error"),
         }
     }
 }
