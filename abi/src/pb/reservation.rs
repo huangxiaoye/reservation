@@ -39,7 +39,9 @@ pub struct ReserveResponse {
 /// To update a reservation, send an UpdateRequest. Only note is updateable
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct UpdateRequest {
-    #[prost(string, tag = "1")]
+    #[prost(int64, tag = "1")]
+    pub id: i64,
+    #[prost(string, tag = "2")]
     pub note: ::prost::alloc::string::String,
 }
 /// Updated reservation will be returned in UpdateResponse
@@ -51,8 +53,8 @@ pub struct UpdateResponse {
 /// To change a reservation from pending to confirmed, send a ConfirmRequest
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ConfirmRequest {
-    #[prost(string, tag = "1")]
-    pub id: ::prost::alloc::string::String,
+    #[prost(int64, tag = "1")]
+    pub id: i64,
 }
 /// Confirmed reservation will be returned in ConfirmResponse
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -63,8 +65,8 @@ pub struct ConfirmResponse {
 /// To cancel a reservation, send a CancelRequest
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CancelRequest {
-    #[prost(string, tag = "1")]
-    pub id: ::prost::alloc::string::String,
+    #[prost(int64, tag = "1")]
+    pub id: i64,
 }
 /// Cancel a reservation will be returned in CancelResponse
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -75,8 +77,8 @@ pub struct CancelResponse {
 /// To get a reservation, send a GetRequest
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GetRequest {
-    #[prost(string, tag = "1")]
-    pub id: ::prost::alloc::string::String,
+    #[prost(int64, tag = "1")]
+    pub id: i64,
 }
 /// Reservation will be returned in GetResponse
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -343,7 +345,7 @@ pub mod reservation_service_client {
         pub async fn update(
             &mut self,
             request: impl tonic::IntoRequest<super::Reservation>,
-        ) -> Result<tonic::Response<super::Reservation>, tonic::Status> {
+        ) -> Result<tonic::Response<super::UpdateResponse>, tonic::Status> {
             self.inner.ready().await.map_err(|e| {
                 tonic::Status::new(
                     tonic::Code::Unknown,
@@ -463,7 +465,7 @@ pub mod reservation_service_server {
         async fn update(
             &self,
             request: tonic::Request<super::Reservation>,
-        ) -> Result<tonic::Response<super::Reservation>, tonic::Status>;
+        ) -> Result<tonic::Response<super::UpdateResponse>, tonic::Status>;
         /// cancel a reservation
         async fn cancel(
             &self,
@@ -618,7 +620,7 @@ pub mod reservation_service_server {
                     #[allow(non_camel_case_types)]
                     struct updateSvc<T: ReservationService>(pub Arc<T>);
                     impl<T: ReservationService> tonic::server::UnaryService<super::Reservation> for updateSvc<T> {
-                        type Response = super::Reservation;
+                        type Response = super::UpdateResponse;
                         type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
                         fn call(
                             &mut self,

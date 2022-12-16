@@ -51,7 +51,8 @@ message ReserveResponse {
 
 // To update a reservation, send an UpdateRequest. Only note is updateable
 message UpdateRequest {
-  string note = 1;
+  int64 id = 1;
+  string note = 2;
 }
 
 // Updated reservation will be returned in UpdateResponse
@@ -61,7 +62,7 @@ message UpdateResponse {
 
 // To change a reservation from pending to confirmed, send a ConfirmRequest
 message ConfirmRequest {
-  string id = 1;
+  int64 id = 1;
 }
 
 // Confirmed reservation will be returned in ConfirmResponse
@@ -71,7 +72,7 @@ message ConfirmResponse {
 
 // To cancel a reservation, send a CancelRequest
 message CancelRequest {
-  string id = 1;
+  int64 id = 1;
 }
 
 // Cancel a reservation will be returned in CancelResponse
@@ -81,7 +82,7 @@ message CancelResponse {
 
 // To get a reservation, send a GetRequest
 message GetRequest {
-  string id = 1;
+  int64 id = 1;
 }
 
 // Reservation will be returned in GetResponse
@@ -167,7 +168,7 @@ service ReservationService {
   // confirm a pending reservation, if the reservation is not pending, do nothing
   rpc confirm(ConfirmRequest) returns (ConfirmResponse);
   // update reservation note
-  rpc update(Reservation) returns (Reservation);
+  rpc update(Reservation) returns (UpdateResponse);
   // cancel a reservation
   rpc cancel(CancelRequest) returns (CancelResponse);
   // get a reservation by id
