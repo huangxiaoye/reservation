@@ -5,6 +5,18 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[features]
+default = []
+
+# [profile.test]
+# default = ["test_utils"]
+
+# [[test]]
+# name = "service"
+# path = "tests/service.rs"
+# required-features = ["test_utils"]
+
+
 [dependencies]
 abi = { version = "0.1.0", path = "../abi" }
 anyhow = "1.0.65"

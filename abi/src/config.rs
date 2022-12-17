@@ -1,4 +1,4 @@
-use std::fs;
+use std::{fs, path::Path};
 
 use serde::{Deserialize, Serialize};
 
@@ -29,8 +29,8 @@ pub struct ServerConfig {
 }
 
 impl Config {
-    pub fn load(filename: &str) -> Result<Self, Error> {
-        let config = fs::read_to_string(filename).map_err(|_| Error::ConfigReadError)?;
+    pub fn load(filename: impl AsRef<Path>) -> Result<Self, Error> {
+        let config = fs::read_to_string(filename.as_ref()).map_err(|_| Error::ConfigReadError)?;
         serde_yaml::from_str(&config).map_err(|_| Error::ConfigParseError)
     }
 }
@@ -51,6 +51,15 @@ impl DbConfig {
     }
 }
 
+impl ServerConfig {
+    pub fn url(&self, https: bool) -> String {
+        if https {
+            format!("https://{}:{}", self.host, self.port)
+        } else {
+            format!("http://{}:{}", self.host, self.port)
+        }
+    }
+}
 #[cfg(test)]
 mod tests {
     use super::*;

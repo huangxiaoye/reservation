@@ -11,7 +11,7 @@ use sqlx::postgres::PgPoolOptions;
 use sqlx::Row;
 use sqlx::{Either, PgPool};
 use tokio::sync::mpsc;
-use tracing::{info, warn};
+use tracing::{info, trace, warn};
 
 #[async_trait]
 impl Rsvp for ReservationManager {
@@ -165,12 +165,13 @@ impl Rsvp for ReservationManager {
         let start = usize::from(has_prev);
         //let start = if has_prev { 1 } else { 0 };
 
-        let has_next = (rsvps.len() - start) as i32 > page_size;
+        let has_next = (rsvps.len() - start) as i64 > page_size;
         let end = if has_next {
             rsvps.len() - 1
         } else {
             rsvps.len()
         };
+        trace!("start: {}, rsvp len: {}, end: {}", start, rsvps.len(), end);
         let prev = if has_prev { rsvps[start - 1].id } else { -1 };
         let next = if has_next { rsvps[end - 1].id } else { -1 };
 
