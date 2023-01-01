@@ -102,13 +102,14 @@ message ReservationQuery {
   google.protobuf.Timestamp start = 4;
   // end time for the reservation query, if zero, use Infinity for end time
   google.protobuf.Timestamp end = 5;
-
-  // current pagey for the query
-  int32 page = 6;
-  //page size for the query
-  int64 page_size = 7;
   //sort direction for the query
-  bool desc = 8;
+  bool desc = 6;
+  // // current pagey for the query
+  // int32 page = 6;
+  // //page size for the query
+  // int64 page_size = 7;
+  // //sort direction for the query
+  // bool desc = 8;
 }
 // To query a reservation, send a QueryRequest
 message QueryRequest {
@@ -124,7 +125,7 @@ message ReservationFilter {
   // use status to filter result. if UNKNOWN, return all reservations
   ReservationStatus status = 3;
   // previous cursor
-  int64 cursor = 4;
+  optional int64 cursor = 4;
   //page size for the query
   int64 page_size = 5;
   //sort direction for the query
@@ -138,9 +139,9 @@ message FilterRequest {
 
 // filter pager info
 message FilterPager {
-  int64 prev = 1;
-  int64 next = 2;
-  int64 total = 3;
+  optional int64 prev = 1;
+  optional int64 next = 2;
+  optional int64 total = 3;
 }
 
 message FilterResponse {

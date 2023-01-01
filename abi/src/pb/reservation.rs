@@ -109,16 +109,15 @@ pub struct ReservationQuery {
     #[prost(message, optional, tag = "5")]
     #[builder(setter(into, strip_option), default)]
     pub end: ::core::option::Option<::prost_types::Timestamp>,
-    /// current pagey for the query
-    #[prost(int32, tag = "6")]
-    #[builder(setter(into), default)]
-    pub page: i32,
-    /// page size for the query
-    #[prost(int64, tag = "7")]
-    #[builder(setter(into), default)]
-    pub page_size: i64,
     /// sort direction for the query
-    #[prost(bool, tag = "8")]
+    ///
+    /// // current pagey for the query
+    /// int32 page = 6;
+    /// //page size for the query
+    /// int64 page_size = 7;
+    /// //sort direction for the query
+    /// bool desc = 8;
+    #[prost(bool, tag = "6")]
     #[builder(setter(into), default)]
     pub desc: bool,
 }
@@ -129,7 +128,9 @@ pub struct QueryRequest {
     pub query: ::core::option::Option<ReservationQuery>,
 }
 /// To query reservations, order by reservation id
-#[derive(derive_builder::Builder, Clone, PartialEq, ::prost::Message)]
+#[derive(derive_builder::Builder)]
+#[builder(build_fn(name = "private_build"))]
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ReservationFilter {
     /// request id for the reservation query. If empty, query all resources
     #[prost(string, tag = "1")]
@@ -144,9 +145,9 @@ pub struct ReservationFilter {
     #[builder(setter(into), default)]
     pub status: i32,
     /// previous cursor
-    #[prost(int64, tag = "4")]
-    #[builder(setter(into), default)]
-    pub cursor: i64,
+    #[prost(int64, optional, tag = "4")]
+    #[builder(setter(into, strip_option), default)]
+    pub cursor: ::core::option::Option<i64>,
     /// page size for the query
     #[prost(int64, tag = "5")]
     #[builder(setter(into), default = "10")]
@@ -165,12 +166,12 @@ pub struct FilterRequest {
 /// filter pager info
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct FilterPager {
-    #[prost(int64, tag = "1")]
-    pub prev: i64,
-    #[prost(int64, tag = "2")]
-    pub next: i64,
-    #[prost(int64, tag = "3")]
-    pub total: i64,
+    #[prost(int64, optional, tag = "1")]
+    pub prev: ::core::option::Option<i64>,
+    #[prost(int64, optional, tag = "2")]
+    pub next: ::core::option::Option<i64>,
+    #[prost(int64, optional, tag = "3")]
+    pub total: ::core::option::Option<i64>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct FilterResponse {

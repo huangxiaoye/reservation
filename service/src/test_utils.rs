@@ -34,4 +34,9 @@ impl TestConfig {
 
         Self { tdb, config }
     }
+    pub fn with_server_port(port: u16) -> Self {
+        let mut config = TestConfig::default();
+        config.config.server.port = port;
+        config
+    }
 }
